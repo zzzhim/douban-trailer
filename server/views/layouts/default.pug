@@ -1,0 +1,13 @@
+doctype html
+html
+head
+    meta(charset="utf-8")
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    //- 继承当前业务的那个页面的模板 会传递过来
+    block title
+    //- 引入
+    include ../includes/style
+body
+    block content
+    include ../includes/script
+    
