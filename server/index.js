@@ -1,14 +1,20 @@
 const koa = require('koa')
+const mongoose = require('mongoose')
 
 const views = require('koa-views')
 
 const { resolve } = require('path')
-const connect = require('./database/init')
+const { initSchemas, connect} = require('./database/init')
 
 const app = new koa()
 
 ;(async () => {
     await connect()
+    // 初始化
+    initSchemas()
+
+    // require('./tasks/movie')
+    require('./tasks/api')
 })()
 
 app.use(views(resolve(__dirname, './views'), {

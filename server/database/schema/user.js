@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 
 const Schema = mongoose.Schema
 const Mixed = Schema.Types.Mixed
+
 const SALT_WORK_FACTOR = 10
 const MAX_LOING_ATTEMPTS = 5
 const LOCK_TIME = 2 * 60 * 60 * 1000
@@ -41,7 +42,7 @@ const UserSchema = new Schema({
     }
 })
 
-UserSchema.pre('save', next => {
+UserSchema.pre('save', function (next) {
     let user = this
 
     if (!user.isModified('password')){
@@ -68,7 +69,7 @@ UserSchema.pre('save', next => {
     next()
 })
 // 虚拟字段
-UserSchema.virtual('isLocked').get(() => {
+UserSchema.virtual('isLocked').get(function () {
     // 判断是否继续锁定
     return !!(this.lockUntil && this.lockUntil > Date.now())
 })
@@ -87,7 +88,7 @@ UserSchema.methods = { // 实例方法
         })
     },
     // 来判断当前用户是否超过了登录次数
-    incLoginAttepts: (user) => {
+    incLoginAttepts: function(user) {
         return new Promise((resolve, reject) => {
             // 判断锁定是否超过有效期
             if (this.lockUntil && this.lockUntil < Date.now()) {

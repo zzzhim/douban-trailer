@@ -2,6 +2,9 @@ const cp = require('child_process')
 
 const { resolve } = require('path')
 
+const mongoose = require('mongoose')
+const Movie = mongoose.model('Movie')
+
 ;(async () => {
     const script = resolve(__dirname, '../crawler/tralier-list.js')
     const child = cp.fork(script, []) // 启动一个子进程运行script
@@ -25,7 +28,17 @@ const { resolve } = require('path')
     child.on('message', data => { // 接收  process.send({ result }) 发送过来的事件
         let result = data.result
 
-        console.log(result);
-    })
+        // console.log(result);
 
+        result.forEach(async item => {
+            let movie = await Movie.findOne({
+                doubanId: item.doubanId
+            })
+
+            if(!movie) {
+                movie = new Movie(item)
+                await movie.save()
+            }
+        })
+    })
 })()
