@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ali-oss": "^6.0.1",
     "ejs": "^2.6.1",
     "koa": "^2.6.1",
     "koa-views": "^6.1.4",
