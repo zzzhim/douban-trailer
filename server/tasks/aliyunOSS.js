@@ -1,8 +1,8 @@
 const movies = [{ // 测试
-    video: 'http://vt1.doubanio.com/201810312110/47a18400c65c4022c66d7e416b9504ba/view/movie/M/402380333.mp4',
+    // video: 'http://vt1.doubanio.com/201810312110/47a18400c65c4022c66d7e416b9504ba/view/movie/M/402380333.mp4',
     doubanId: '26290410',
     poster: 'https://img3.doubanio.com/view/photo/l_ratio_poster/public/p2537884431.jpg',
-    cover: 'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2533173724.webp'
+    cover: 'https://img3.doubanio.com/view/photo/l_ratio_poster/public/p2531097433.webp'
 }]
 
 let OSS = require('ali-oss')
@@ -14,12 +14,13 @@ const bucket = require('../config/index')
 const client = new OSS(bucket)
 
 ;(async() => {
-    async function put(fileName) {
+    async function put(fileName,file) {
         try {
             // 上传文件到阿里云OSS
             await client.put(fileName, __dirname + `/imgs/${fileName}`);
-            console.log(`上传成功: ${fileName}`)
+            // await client.put(fileName, file);
 
+            console.log(`上传成功: ${fileName}`)
         } catch (e) {
             console.log('上传失败')
             console.log(e)
@@ -34,10 +35,20 @@ const client = new OSS(bucket)
                 let imgName = arr[arr.length - 1] // 获取文件名
 
                 let ends = request.get(url) // 获取
-
+                
                 ends.pipe(fs.createWriteStream(__dirname + `/imgs/${imgName}`)) // 写入
 
-                ends.on('end', () => { // 写入后
+                ends.on('end',async () => { // 写入后
+                    // let data = await new Promise((resolve, reject) => {
+                    //     fs.readFile(__dirname + `/imgs/${imgName}`, (err, data) => {
+                    //         if(err){
+                    //             reject(err)
+                    //         }
+                    //         resolve(data)
+                    //     })
+                    // })
+                    // // 通过Buffer的方式传
+                    // data = new Buffer.from(data)
                     put(imgName).then(val => {
                         // 当文件上传到阿里云OSS后 删除文件
                         fs.unlink(__dirname + `/imgs/${imgName}`, function (err) {

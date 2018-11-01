@@ -3,8 +3,13 @@ const koa = require('koa')
 const views = require('koa-views')
 
 const { resolve } = require('path')
+const connect = require('./database/init')
 
 const app = new koa()
+
+;(async () => {
+    await connect()
+})()
 
 // const { htmlTpl, ejsTpl, pugTpl } = require('./tpl')
 
